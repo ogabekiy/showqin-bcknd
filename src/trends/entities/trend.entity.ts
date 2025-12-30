@@ -2,46 +2,44 @@ import { BelongsTo, Column, DataType, ForeignKey, Model, Table } from "sequelize
 import { Category } from "src/categories/entities/category.entity";
 import { User } from "src/users/dto/entities/user.entity";
 
-@Table({tableName: 'articles'})
-export class Article extends Model<Article> {
+@Table({tableName: 'trends'})
+export class Trend extends Model<Trend> {
+    @Column({
+        type: DataType.ARRAY(DataType.STRING),
+        allowNull: false
+    })
+    medias_urls: string[];
+    
     @Column({
         type: DataType.STRING,
         allowNull: false
     })
-    title: string
+    title: string;
 
     @Column({
         type: DataType.STRING,
         allowNull: false,
         unique: true
     })
-    slug: string
+    slug: string;
 
     @Column({
-        type: DataType.TEXT,
+        type: DataType.STRING,
         allowNull: false
     })
-    summary_text: string
-
-    @Column({
-        type: DataType.TEXT,
-        allowNull: false
-    })
-    content: string
+    text: string;
 
     @Column({
         type: DataType.STRING,
         allowNull: true
     })
-    thumbnail_url: string
-    
+    url_name: string;
 
     @Column({
-        type: DataType.ENUM('draft', 'published', 'archived'),
-        defaultValue: 'draft'
+        type: DataType.STRING,
+        allowNull: true
     })
-    status: 'draft' | 'published' | 'archived'
-
+    url_link: string;
 
     @Column({
         type: DataType.BIGINT,
@@ -59,18 +57,19 @@ export class Article extends Model<Article> {
         type: DataType.INTEGER,
         allowNull: false
     })
-    author_id: number
+    author_id: number;
 
     @ForeignKey(() => Category)
     @Column({
         type: DataType.INTEGER,
         allowNull: false
     })
-    category_id: number
+    category_id: number;
 
-    @BelongsTo(() => User)
-    author: User
 
-    @BelongsTo(() => Category)
-    category: Category
+   @BelongsTo(() => User)
+   author: User;
+
+   @BelongsTo(() => Category)
+   category: Category;
 }

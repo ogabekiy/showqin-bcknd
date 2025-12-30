@@ -33,7 +33,7 @@ export class ArticlesService {
     if(!data){
       throw new NotFoundException('Article not found');
     }
-    data.views_count += 1;
+    data.views_count++;
     await data.save();
     return data;
   }
