@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { UsersModule } from './users/users.module';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { CategoriesModule } from './categories/categories.module';
+import { AuthsModule } from './auths/auths.module';
+import { ArticlesModule } from './articles/articles.module';
 import * as dotenv from 'dotenv'
 dotenv.config();
 @Module({
@@ -17,7 +19,9 @@ dotenv.config();
       synchronize: true,
       logging: console.log
     }),
-    CategoriesModule
+    CategoriesModule,
+    AuthsModule,
+    ArticlesModule
   ],
   controllers: [],
   providers: [],

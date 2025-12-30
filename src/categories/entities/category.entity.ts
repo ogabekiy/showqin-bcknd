@@ -1,4 +1,5 @@
-import { Column, DataType, Model, Table } from "sequelize-typescript";
+import { Column, DataType, HasMany, Model, Table } from "sequelize-typescript";
+import { Article } from "src/articles/entities/article.entity";
 
 @Table({tableName: 'categories'})
 export class Category extends Model<Category>{
@@ -20,4 +21,7 @@ export class Category extends Model<Category>{
         unique: true
     })
     slug :string
+
+    @HasMany(() => Article)
+    articles: Article[];
 }

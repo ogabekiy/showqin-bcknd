@@ -74,7 +74,13 @@ export class UsersService {
 }
 
   async remove(id: number) {
-    await this.findOne(id);
+    const user = await this.findOne(id);
+    if(user.avatar_url){
+      const filePath = path.join(process.cwd(), user.avatar_url.replace(/^\/+/g, ''));
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
+    }
     return await this.UserModel.destroy({where: {id}});
   }
 }
