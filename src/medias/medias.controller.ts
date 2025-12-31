@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, BadRequestException, UploadedFile, NotFoundException, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, BadRequestException, UploadedFile, NotFoundException, Query, UseGuards } from '@nestjs/common';
 import { MediasService } from './medias.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
@@ -6,10 +6,14 @@ import type { Multer } from 'multer';
 import { extname } from 'path';
 import * as fs from 'fs';
 import * as path from 'path';
+import { RoleGuard } from 'src/common/guards/roleGuard';
+import { Roles } from 'src/common/guards/roles.decorator';
 @Controller('medias')
 export class MediasController {
   constructor(private readonly mediasService: MediasService) {}
 
+  @UseGuards(RoleGuard)
+  @Roles('admin','author')
   @Post('create')
       @UseInterceptors(
         FileInterceptor('media', {
@@ -54,6 +58,8 @@ export class MediasController {
         throw new BadRequestException('Fayl yuklanmadi');
       }
 
+  @UseGuards(RoleGuard)
+  @Roles('admin','author')
   @Delete('delete')
   async remove(@Query('url') url: string) {
     if (!url) {

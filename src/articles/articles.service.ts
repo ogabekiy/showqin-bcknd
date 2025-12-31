@@ -16,6 +16,11 @@ export class ArticlesService {
   ){}
 
   async create(createArticleDto: CreateArticleDto) {
+    const data = await this.articleModel.findOne({where: {slug: createArticleDto.slug}});
+    if(data){
+      throw new NotFoundException('Article with this slug already exists');
+    }
+    console.log('Creating article with author_id:', createArticleDto);
     const user = await this.userService.findOne(createArticleDto.author_id);
     if(user.role !== 'author' && user.role !== 'admin'){
       throw new NotFoundException('Faqat muallif yoki admin maqomiga ega foydalanuvchilar maqola yaratishi mumkin');

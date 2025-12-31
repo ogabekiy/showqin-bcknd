@@ -36,9 +36,10 @@ export class CreateArticleDto {
   @IsEnum(['draft', 'published', 'archived'])
   status?: 'draft' | 'published' | 'archived';
 
+  @IsOptional()
   @Type(() => Number)
   @IsInt()
-  author_id: number;
+  author_id?: number;
 
   @Type(() => Number)
   @IsInt()

@@ -32,6 +32,11 @@ export class UsersService {
     return await this.UserModel.findAll();
   }
 
+  async finyByEmail(email: string) {
+    const data =  await this.UserModel.findOne({where: {email}});
+    return data
+  }
+
   async findOne(id: number) {
     const user = await this.UserModel.findByPk(id);
     if (!user) {

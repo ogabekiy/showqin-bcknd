@@ -9,6 +9,8 @@ import {
   UploadedFile,
   UseInterceptors,
   BadRequestException,
+  UseGuards,
+  Request,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
@@ -18,11 +20,15 @@ import { extname } from 'path';
 import { ArticlesService } from './articles.service';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
+import { RoleGuard } from 'src/common/guards/roleGuard';
+import { Roles } from 'src/common/guards/roles.decorator';
 
 @Controller('articles')
 export class ArticlesController {
   constructor(private readonly articlesService: ArticlesService) {}
 
+  @UseGuards(RoleGuard)
+  @Roles('admin','author')
   @Post('create')
   @UseInterceptors(
     FileInterceptor('thumbnail', {
@@ -57,12 +63,14 @@ export class ArticlesController {
   create(
     @Body() createArticleDto: CreateArticleDto,
     @UploadedFile() file?: Multer.File,
+    @Request() req?: any
   ) {
     if (file) {
       createArticleDto.thumbnail_url =
         `/uploads/thumbnails/${file.filename}`;
     }
-
+    console.log('Request user:', req.user.dataValues.id);
+    createArticleDto.author_id = req.user.dataValues.id;
     return this.articlesService.create(createArticleDto);
   }
 
@@ -77,6 +85,8 @@ export class ArticlesController {
     return this.articlesService.findOne(+id);
   }
 
+  @UseGuards(RoleGuard)
+  @Roles('admin','author')
   @Patch('update/:id')
   update(
     @Param('id') id: string,
@@ -130,6 +140,8 @@ updateThumbnail(
 }
 
 
+  @UseGuards(RoleGuard)
+  @Roles('admin')
   @Delete('delete/:id')
   remove(@Param('id') id: string) {
     return this.articlesService.remove(+id);

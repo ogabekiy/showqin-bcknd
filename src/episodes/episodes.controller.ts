@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, BadRequestException, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, BadRequestException, UploadedFile, UseInterceptors, UseGuards } from '@nestjs/common';
 import { EpisodesService } from './episodes.service';
 import { CreateEpisodeDto } from './dto/create-episode.dto';
 import { UpdateEpisodeDto } from './dto/update-episode.dto';
@@ -6,11 +6,15 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import type { Multer } from 'multer';
 import { extname } from 'path';
+import { RoleGuard } from 'src/common/guards/roleGuard';
+import { Roles } from 'src/common/guards/roles.decorator';
 
 @Controller('episodes')
 export class EpisodesController {
   constructor(private readonly episodesService: EpisodesService) {}
 
+    @UseGuards(RoleGuard)
+    @Roles('admin','author')
    @Post('create')
     @UseInterceptors(
       FileInterceptor('thumbnail', {
@@ -64,11 +68,15 @@ export class EpisodesController {
     return this.episodesService.findOne(+id);
   }
 
+  @UseGuards(RoleGuard)
+  @Roles('admin','author')
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateEpisodeDto: UpdateEpisodeDto) {
     return this.episodesService.update(+id, updateEpisodeDto);
   }
 
+  @UseGuards(RoleGuard)
+  @Roles('admin')
   @Delete('delete/:id')
   remove(@Param('id') id: string) {
     return this.episodesService.remove(+id);
