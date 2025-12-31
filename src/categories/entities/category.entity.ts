@@ -1,5 +1,6 @@
 import { Column, DataType, HasMany, Model, Table } from "sequelize-typescript";
 import { Article } from "src/articles/entities/article.entity";
+import { Episode } from "src/episodes/entities/episode.entity";
 import { Trend } from "src/trends/entities/trend.entity";
 
 @Table({tableName: 'categories'})
@@ -28,4 +29,7 @@ export class Category extends Model<Category>{
 
     @HasMany(() => Trend)
     trends: Trend[];
+
+    @HasMany(() => Episode)
+    episodes: Episode[];
 }

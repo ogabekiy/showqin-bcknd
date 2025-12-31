@@ -1,5 +1,6 @@
-import { BelongsTo, Column, DataType, ForeignKey, Model, Table } from "sequelize-typescript";
+import { BelongsTo, Column, DataType, ForeignKey, HasMany, Model, Table } from "sequelize-typescript";
 import { Category } from "src/categories/entities/category.entity";
+import { Like } from "src/likes/entities/like.entity";
 import { User } from "src/users/dto/entities/user.entity";
 
 @Table({tableName: 'articles'})
@@ -73,4 +74,7 @@ export class Article extends Model<Article> {
 
     @BelongsTo(() => Category)
     category: Category
+
+    @HasMany(() => Like)
+    likes: Like[];
 }

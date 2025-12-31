@@ -1,5 +1,6 @@
 import { Column, DataType, HasMany, Model, Table } from "sequelize-typescript";
 import { Article } from "src/articles/entities/article.entity";
+import { Like } from "src/likes/entities/like.entity";
 import { Trend } from "src/trends/entities/trend.entity";
 
 @Table({tableName: 'users'})
@@ -76,4 +77,7 @@ export class User extends Model<User> {
 
     @HasMany(() => Trend)
     trends: Trend[];
+
+    @HasMany(() => Like)
+    likes: Like[];
 }

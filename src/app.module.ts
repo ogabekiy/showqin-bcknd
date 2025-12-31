@@ -5,6 +5,8 @@ import { CategoriesModule } from './categories/categories.module';
 import { AuthsModule } from './auths/auths.module';
 import { ArticlesModule } from './articles/articles.module';
 import { TrendsModule } from './trends/trends.module';
+import { EpisodesModule } from './episodes/episodes.module';
+import { LikesModule } from './likes/likes.module';
 import * as dotenv from 'dotenv'
 dotenv.config();
 @Module({
@@ -23,7 +25,9 @@ dotenv.config();
     CategoriesModule,
     AuthsModule,
     ArticlesModule,
-    TrendsModule
+    TrendsModule,
+    EpisodesModule,
+    LikesModule
   ],
   controllers: [],
   providers: [],
