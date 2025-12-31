@@ -7,6 +7,7 @@ import { ArticlesModule } from './articles/articles.module';
 import { TrendsModule } from './trends/trends.module';
 import { EpisodesModule } from './episodes/episodes.module';
 import { LikesModule } from './likes/likes.module';
+import { MediasModule } from './medias/medias.module';
 import * as dotenv from 'dotenv'
 dotenv.config();
 @Module({
@@ -27,7 +28,8 @@ dotenv.config();
     ArticlesModule,
     TrendsModule,
     EpisodesModule,
-    LikesModule
+    LikesModule,
+    MediasModule
   ],
   controllers: [],
   providers: [],
