@@ -1,4 +1,4 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CreateLoginDto } from './dto/login.dto';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { UsersService } from 'src/users/users.service';
@@ -19,16 +19,16 @@ export class AuthsService {
   async login(createLoginDto: CreateLoginDto){
     const data = await this.userModel.findOne({where:{email: createLoginDto.email}})
     if(!data){
-      throw new NotFoundException('email or password is incorrect');
+      throw new UnauthorizedException('email or password is incorrect');
     }
     const checkPassword = await bcrypt.compare(createLoginDto.password, data.password);
     if(!checkPassword){
-      throw new NotFoundException('email or password is incorrect');
+      throw new UnauthorizedException('email or password is incorrect');
     }
     const jwtSecret = this.configService.get('JWT_ACCESS_TOKEN') || 'default';
 
     const token = await jwt.sign({email: createLoginDto.email, id: data.id}, jwtSecret, {expiresIn: '7d'})
 
-    return {token}
+    return {access_token: token};
   }
 }
