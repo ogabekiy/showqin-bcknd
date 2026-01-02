@@ -14,6 +14,11 @@ async function bootstrap() {
     .setDescription('The Showqin API description')
     .setVersion('1.0')
     .addTag('showqin')
+    .addBearerAuth({
+      type: 'http',
+      scheme: 'bearer',
+      bearerFormat: 'JWT',
+    })
     .build();
   
   const document = SwaggerModule.createDocument(app, config);

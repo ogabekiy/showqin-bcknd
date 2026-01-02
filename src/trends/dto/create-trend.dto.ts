@@ -2,7 +2,7 @@ import { IsArray, ArrayNotEmpty, IsString, IsOptional, IsInt, Min, IsUrl, Length
 import { Type } from 'class-transformer';
 
 export class CreateTrendDto {
-e
+
   medias_urls: string[];
 
   @IsString()

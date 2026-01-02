@@ -16,7 +16,7 @@ export class CategoriesService {
   }
 
   async findAll() {
-    return await this.categoryModel.findAll();
+    return await this.categoryModel.findAll({include:{all:true}});
   }
 
   async findOne(id: number) {

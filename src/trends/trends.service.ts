@@ -35,7 +35,30 @@ export class TrendsService {
     await data.save();
     return data;
   }
-  
+
+  async deleteMedia(trendId: number, mediaUrl: string) {
+    const trend = await this.findOne(trendId);
+    if (!trend) {
+      throw new NotFoundException('Trend not found');
+    }
+
+    const filePath = path.join(
+      process.cwd(),
+      mediaUrl.replace(/^\/+/g, ''),
+    );
+
+    try {
+      if (fs.existsSync(filePath)) {
+        await fs.promises.unlink(filePath);
+      }
+    } catch (err) {
+      console.error('File o‘chirishda xatolik:', filePath, err);
+    }
+
+    return await trend.update({
+      medias_urls: trend.medias_urls.filter(url => url !== mediaUrl),
+    });
+  }
 
   async update(id: number, updateTrendDto: UpdateTrendDto) {
     const trend = await this.findOne(id);

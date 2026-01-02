@@ -9,6 +9,8 @@ import {
   UploadedFiles,
   UseInterceptors,
   UseGuards,
+  Query,
+  NotFoundException,
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
@@ -66,6 +68,8 @@ export class TrendsController {
     });
   }
 
+
+
   @Get('all')
   findAll() {
     return this.trendsService.findAll();
@@ -88,5 +92,70 @@ export class TrendsController {
   @Delete('delete/:id')
   remove(@Param('id') id: string) {
     return this.trendsService.remove(+id);
+  }
+
+  @Patch('add-media/:id')
+@UseInterceptors(
+  FilesInterceptor('medias', 10, {
+    storage: diskStorage({
+      destination: './uploads/medias',
+      filename: (req, file, cb) => {
+        const uniqueName =
+          Date.now() + '-' + Math.round(Math.random() * 1e9)
+        cb(null, uniqueName + extname(file.originalname))
+      },
+    }),
+    fileFilter: (req, file, cb) => {
+      if (
+        file.mimetype.startsWith('image/') ||
+        file.mimetype.startsWith('video/')
+      ) {
+        cb(null, true)
+      } else {
+        cb(
+          new Error('Faqat rasm yoki video yuklash mumkin'),
+          false,
+        )
+      }
+    },
+  }),
+)
+async addMedia(
+  @Param('id') id: string,
+  @UploadedFiles() files: Multer.File[],
+) {
+  const newMediaUrls = files.map(
+    (file) => `/uploads/medias/${file.filename}`,
+  )
+
+  // 1️⃣ eski trendni olamiz
+  const trend = await this.trendsService.findOne(+id)
+
+  if (!trend) {
+    throw new NotFoundException('Trend not found')
+  }
+
+  // 2️⃣ eski media array (agar bo‘lmasa bo‘sh array)
+  const existingMediaUrls = trend.medias_urls || []
+
+  // 3️⃣ birlashtiramiz
+  const updatedMediaUrls = [
+    ...existingMediaUrls,
+    ...newMediaUrls,
+  ]
+
+  // 4️⃣ update
+  return this.trendsService.update(+id, {
+    medias_urls: updatedMediaUrls,
+  })
+}
+
+
+  @Delete('delete-media')
+  deleteMedia(
+    @Query('trendId') trendId: string,
+    @Query('mediaUrl') mediaUrl: string,
+  ) {
+    return this.trendsService.deleteMedia(+trendId, mediaUrl);
   }
 }
